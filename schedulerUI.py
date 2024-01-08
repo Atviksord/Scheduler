@@ -20,14 +20,23 @@ class SchedulerUI:
         pass
     
     def buttons(self): #button management and what they do.
-        pass
+        
+        
+        self.update_listbox()
 
     def textfield(self): #textfields to write in (writing event name, details etc.)
         text_entry = tk.Entry(self.window)
         text_entry.config(width=20)
         text_entry.place(x=500,y=400)
+    
     def listbox(self):
         listbox = tk.Listbox(self.window)
+        for event in self.scheduler.events:
+            listbox.insert(tk.END,str(event))
+        listbox.pack()
+    def update_listbox(self): #refreshes the listbox.
+        listbox = tk.Listbox(self.window)
+        listbox.delete(0, tk.END)
         
         for event in self.scheduler.events:
             listbox.insert(tk.END,str(event))
