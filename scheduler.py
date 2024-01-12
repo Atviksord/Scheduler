@@ -1,8 +1,7 @@
 #This class can serve as a container and manager for Event objects.
 from event import Event
-import datetime
-import plyer
-import time
+from datetime import datetime
+
 class Scheduler:
     def __init__(self) -> None: 
         self.events = {} #will hold instances/objects of each event.
@@ -17,8 +16,11 @@ class Scheduler:
         if not time:
             raise Exception('Please select a time')
         
-        event = Event(event_name,description,time,recurring)
-        self.conflicting_event(time)
+        date = datetime.strptime(time,"%m/%d/%y").date()
+        print(type(date))
+        self.conflicting_event(date)
+        event = Event(event_name,description,date,recurring,days)
+        
         
         if recurring:
             if days > 0:
@@ -29,21 +31,26 @@ class Scheduler:
          #if the key is found, delete the object from hashmap
                 if event_name in self.events:
                     del self.events[event_name]
-                print(f'Event: {event_name} not found')
+                else:
+                     print(f'Event: {event_name} not found')
                 
     
     def reminder(self): #Sends out reminders based on proximity of schedule deadlines. Python datetime, and time libraries.
         current_date = datetime.datetime.now().date()
         for event in self.events.values():
              if event.time.date() - current_date == datetime.timedelta(days=1):
-                plyer.notification.notify(title=event.event_name, message= event.description, timeout=10)
+                pass
                 
     
     def conflicting_event(self,time): #checks for conflict in schedules. If you have another schedule on the same hour returns an OVERBOOKED warning.
-        for event in self.events:
-            if self.events[event].time == time:
-                raise Exception (f'OVERBOOKED {event.event_name} is already scheduled for that time')
+        if len(self.events) > 0:
+            for event,value in self.events.items():
+                print(value.time)
                 
+                if value.time == time:
+                    
+                    raise Exception (f'OVERBOOKED {value.event_name} is already scheduled for that time')
+                    
     
     def recurring_event(self,event,days): #method that reapplies the same event on (x) interval(if the reccurring flag is true). if deleted will stop.
          if event in self.events and self.events[event].recurring:
