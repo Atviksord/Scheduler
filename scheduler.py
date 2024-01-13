@@ -21,7 +21,6 @@ class Scheduler:
         self.conflicting_event(date)
         event = Event(event_name,description,date,recurring,days)
         
-        
         if recurring:
             if days > 0:
                 self.recurring_event(event,days) #if its a recurring event, call this to handle it. TO BE MADE!!!
@@ -45,10 +44,7 @@ class Scheduler:
     def conflicting_event(self,time): #checks for conflict in schedules. If you have another schedule on the same hour returns an OVERBOOKED warning.
         if len(self.events) > 0:
             for event,value in self.events.items():
-                print(value.time)
-                
                 if value.time == time:
-                    
                     raise Exception (f'OVERBOOKED {value.event_name} is already scheduled for that time')
                     
     
