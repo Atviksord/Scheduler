@@ -1,6 +1,8 @@
 #This class can serve as a container and manager for Event objects.
 from event import Event
 from datetime import datetime
+from tkinter import Tk
+from tkinter import messagebox
 
 class Scheduler:
     def __init__(self) -> None: 
@@ -17,13 +19,11 @@ class Scheduler:
             raise Exception('Please select a time')
         
         date = datetime.strptime(time,"%m/%d/%y").date()
-        print(type(date))
+        
         self.conflicting_event(date)
         event = Event(event_name,description,date,recurring,days)
         
-        if recurring:
-            if days > 0:
-                self.recurring_event(event,days) #if its a recurring event, call this to handle it. TO BE MADE!!!
+        
         self.events.update({event.event_name: event}) 
     
     def delevent(self,event_name): #deletes a selected event, once a non reccuring event is triggered, automatically remove the event.
@@ -34,17 +34,23 @@ class Scheduler:
                      print(f'Event: {event_name} not found')
                 
     
-    def reminder(self): #Sends out reminders based on proximity of schedule deadlines. Python datetime, and time libraries.
+    def reminder(self,recurring,days): #Sends out reminders based on proximity of schedule deadlines. Python datetime, and time libraries.
         current_date = datetime.datetime.now().date()
-        for event in self.events.values():
+        for event,value in self.events.items():
              if event.time.date() - current_date == datetime.timedelta(days=1):
-                pass
+                  messagebox.showinfo(message= f'{value.event_name} is due tomorrow!',icon='warning',title='REMINDER')
+                
+        if recurring:
+            if days > 0:
+                self.recurring_event(event,days) #if its a recurring event, call this to handle it. TO BE MADE!!!
                 
     
     def conflicting_event(self,time): #checks for conflict in schedules. If you have another schedule on the same hour returns an OVERBOOKED warning.
         if len(self.events) > 0:
             for event,value in self.events.items():
                 if value.time == time:
+                    messagebox.showinfo(message= f'{value.event_name} is already scheduled for that time',icon='error',title='OVERBOOKED')
+                  
                     raise Exception (f'OVERBOOKED {value.event_name} is already scheduled for that time')
                     
     

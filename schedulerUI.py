@@ -20,6 +20,7 @@ class SchedulerUI:
         self.buttons()
         self.timeselector()
         self.setuprecurring()
+        
 
         
     def add_event(self):
@@ -33,7 +34,7 @@ class SchedulerUI:
             self.schedule.addevent(self.selectedTitle,self.selectedDescription,self.selectedDate,self.recurring,self.days)
             self.update_listbox()
         
-        
+    
     def del_event(self):
         try:
             current = self.listbox.curselection() #select index of the object in the listview
@@ -62,16 +63,12 @@ class SchedulerUI:
     def togglestate(self):
         if self.check_var.get() == 1:
             self.recurringentry.configure(state='normal')
-            self.reccuring = True
-            
-            
+            self.recurring = True   
         else:
             self.recurringentry.delete(0,'end')
             self.recurringentry.configure(state='readonly')
             self.recurring = False
             
-        
-    
     def buttons(self): #button management and what they do.
         self.addButton = tk.Button(self.frame1, text="Add", command=self.add_event,activebackground='green')
         self.delButton = tk.Button(self.frame1, text="Delete", command=self.del_event,activebackground='red')
@@ -105,20 +102,15 @@ class SchedulerUI:
         self.descriptionbox = tk.Text(self.window)
         self.descriptionbox.pack()
         
-        
         self.text_entry.config(width=20)
         self.text_entry.pack()
     
-    
-
     def update_listbox(self):
        self.listbox.delete(0,tk.END)
        for event,value in self.schedule.events.items():
-           self.listbox.insert(tk.END,f'{value.event_name}:{value.time}')
+           self.listbox.insert(tk.END,f'{value.event_name}:{value.time}: Recurring: {value.recurring} This event will happen again every: {value.days} days')
           
-        
-
-    
     def timeselector(self): #select and manage time in the GUI:
         self.cal = Calendar(self.window,selectmode='day',year=2024,month=1,day=1)
         self.cal.pack(padx=10,pady=10)
+    
